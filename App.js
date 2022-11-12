@@ -1,14 +1,40 @@
 import Input from './components/Input';
-import { StyleSheet, View, Image, Text } from 'react-native';
+import ListTransaction from './components/ListTransaction';
+import { StyleSheet, View, Image, Text, ScrollView } from 'react-native';
+import { useState } from 'react';
 
 export default function App() {
+  const [transaction, setTransaction] = useState([]);
+
+  let names = []
+  if (transaction) {
+    transaction.forEach(element => {
+      names.push(element.description)
+    });
+  }
+
+  const addProductHandler = (imports) => {
+    setTransaction(() => [...transaction, imports])
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.title}>
         <Image style={styles.image} source={require('./assets/finanzas.png')}/>
         <Text style={styles.textTitle}>My Budget</Text>
       </View>
-      <Input/>
+      <Input onImportAdd={addProductHandler}/>
+      <ScrollView>
+        {
+          names.length === 0
+              ? <Text style={styles.textEmpty}>Sin Transacciones</Text>
+              :transaction.map((importe, idx) => (
+              <ListTransaction
+                key={idx + importe}
+                importe={importe}/>
+            ))
+        }
+      </ScrollView>
     </View>
   );
 }
@@ -22,7 +48,7 @@ const styles = StyleSheet.create({
   title: {
     backgroundColor: '#00cbcc',
     width: '100%',
-    height: 80,
+    height: 90,
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
     flexDirection: 'row',
@@ -35,5 +61,10 @@ const styles = StyleSheet.create({
   },
   textTitle: {
     fontSize: 40,
-  }
+  },
+  textEmpty: {
+    textAlign: 'center',
+    marginTop: '5%',
+    marginTop: 200
+  },
 });

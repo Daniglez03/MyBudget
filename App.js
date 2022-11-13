@@ -1,6 +1,6 @@
 import Input from './components/Input';
 import ListTransaction from './components/ListTransaction';
-import { StyleSheet, View, Image, Text, ScrollView } from 'react-native';
+import { StyleSheet, View, Image, Text, ScrollView, Pressable } from 'react-native';
 import { useState } from 'react';
 
 export default function App() {
@@ -17,10 +17,18 @@ export default function App() {
     setTransaction(() => [...transaction, imports])
   }
 
+  const removeAllTransactionsHandler = () => {
+    setTransaction('')
+  }
+
   let totalPrice = 0;
 
   for (let i = 0; i < transaction.length; i++) {
     totalPrice += parseInt(transaction[i].importe);
+  }
+
+  const removeTransaction = (imports) => {
+    setTransaction(() => transaction.filter((i) => i.description != imports));
   }
 
   return (
@@ -40,10 +48,22 @@ export default function App() {
             : transaction.map((importe, idx) => (
               <ListTransaction
                 key={idx + importe}
-                importe={importe} />
+                importe={importe} 
+                removeTransaction={removeTransaction}/>
             ))
         }
       </ScrollView>
+      <View style={styles.View}>
+      {
+        names.length === 0
+          ? <Pressable style={styles.buttonDisabled}>
+            <Text style={styles.text}>Clear</Text>
+          </Pressable>
+          : <Pressable style={styles.button} onPress={removeAllTransactionsHandler}>
+            <Text style={styles.text}>Clear</Text>
+          </Pressable>
+      }
+      </View>
     </View>
   );
 }
@@ -53,6 +73,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    height: '100%',
+  },
+  View: {
+    justifyContent: 'flex-end'
   },
   title: {
     backgroundColor: '#00cbcc',
@@ -88,5 +112,23 @@ const styles = StyleSheet.create({
   },
   textStylePrice: {
     fontSize: 40
-  }
+  },
+  buttonDisabled: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    height: 40,
+    width: 80,
+    backgroundColor: '#7f0000',
+    marginBottom: 15,
+  },
+  button: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    height: 40,
+    width: 80,
+    backgroundColor: '#e53935',
+    marginBottom: 15,
+  },
 });

@@ -22,14 +22,15 @@ const Input = ({ onImportAdd }) => {
     }
     const addProductHandler = () => {
         onImportAdd(importe);
-        setImporte({ ...importe, description: "", importe: 0 })
+        setImporte({ ...importe, description: "", importe: 0})
     }
 
-    const precioTotal = 0;
+    let precioTotal = 0;
+    let tusmu = parseInt(importe.importe)
+    precioTotal +=  tusmu
 
     return (
         <View style={styles.Input}>
-            <Text style={styles.textStylePrice}>{precioTotal} €</Text>
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: "cyan",
         width: '100%',
-        height: 125,
+        height: 90,
         justifyContent: 'center',
         borderBottomRightRadius: 30,
         borderBottomLeftRadius: 30,

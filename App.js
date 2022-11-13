@@ -17,21 +17,30 @@ export default function App() {
     setTransaction(() => [...transaction, imports])
   }
 
+  let totalPrice = 0;
+
+  for (let i = 0; i < transaction.length; i++) {
+    totalPrice += parseInt(transaction[i].importe);
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.title}>
-        <Image style={styles.image} source={require('./assets/finanzas.png')}/>
+        <Image style={styles.image} source={require('./assets/finanzas.png')} />
         <Text style={styles.textTitle}>My Budget</Text>
       </View>
-      <Input onImportAdd={addProductHandler}/>
+      <View style={styles.backgroundColorView}>
+        <Text style={styles.textStylePrice}>{totalPrice} €</Text>
+      </View>
+      <Input onImportAdd={addProductHandler} />
       <ScrollView>
         {
           names.length === 0
-              ? <Text style={styles.textEmpty}>Sin Transacciones</Text>
-              :transaction.map((importe, idx) => (
+            ? <Text style={styles.textEmpty}>Sin Transacciones</Text>
+            : transaction.map((importe, idx) => (
               <ListTransaction
                 key={idx + importe}
-                importe={importe}/>
+                importe={importe} />
             ))
         }
       </ScrollView>
@@ -67,4 +76,17 @@ const styles = StyleSheet.create({
     marginTop: '5%',
     marginTop: 200
   },
+  backgroundColorView: {
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    backgroundColor: "cyan",
+    width: '100%',
+    height: 60,
+    justifyContent: 'center',
+    justifyContent: 'flex-end'
+  },
+  textStylePrice: {
+    fontSize: 40
+  }
 });

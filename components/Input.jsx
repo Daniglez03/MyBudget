@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Modal, StyleSheet, TextInput, View, Text, Pressable } from 'react-native';
+import { Modal, StyleSheet, TextInput, View, Text, Pressable, Alert } from 'react-native';
 
 const Input = ({ onImportAdd }) => {
     let transaccion = {
@@ -22,12 +22,23 @@ const Input = ({ onImportAdd }) => {
     }
     const addProductHandler = () => {
         onImportAdd(importe);
-        setImporte({ ...importe, description: "", importe: 0})
+        setImporte({ ...importe, description: "", importe: 0 })
     }
+    const alertFields = () => Alert.alert(
+        "Importante !",
+        "Rellena todos los campos para añadir una transacción.",
+        [
+            {
+                text: "Cancel",
+                style: "cancel"
+            },
+            { text: "OK" }
+        ]
+    );
 
     let precioTotal = 0;
     let tusmu = parseInt(importe.importe)
-    precioTotal +=  tusmu
+    precioTotal += tusmu
 
     return (
         <View style={styles.Input}>
@@ -53,8 +64,7 @@ const Input = ({ onImportAdd }) => {
                                     <Text>Añadir Transacción</Text>
                                 </Pressable>
                                 : <Pressable
-                                    style={styles.buttonDisable}
-                                    disabled={true}>
+                                    style={styles.buttonDisable} onPress={alertFields}>
                                     <Text>Añadir Transacción</Text>
                                 </Pressable>
                         }

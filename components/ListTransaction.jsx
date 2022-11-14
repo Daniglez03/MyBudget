@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Image, StyleSheet, Text, View, Modal, Pressable, Alert } from 'react-native'
+import { Image, StyleSheet, Text, View, Modal, Pressable, Alert, TextInput } from 'react-native'
 
-const ListTransaction = ({ importe, removeTransaction}) => {
-    const [newImport, setImport] = useState(importe);
+const ListTransaction = ({ importe, removeTransaction }) => {
+    const [newImport, setNewImport] = useState(importe);
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalEdit, setModalEdit] = useState(false);
 
     const remove = () => {
         Alert.alert(
@@ -14,10 +15,14 @@ const ListTransaction = ({ importe, removeTransaction}) => {
                     text: "Cancel",
                     style: "cancel",
                 },
-                { text: "OK", onPress: () => removeTransaction(importe.description)}
+                { text: "OK", onPress: () => removeTransaction(importe.importe) }
             ]
         );
     }
+
+    // const editTransaction = () => {
+    //     setEditImport({...newImport, importe: editImport.importe, description: editImport.description})
+    // }
 
     return (
         <View style={styles.listItem}>
@@ -30,7 +35,9 @@ const ListTransaction = ({ importe, removeTransaction}) => {
             <Pressable onPress={() => setModalVisible(true)}>
                 <Image style={styles.image} source={require('../assets/info.png')} />
             </Pressable>
-            <Image style={styles.image} source={require('../assets/edit.png')} />
+            <Pressable onPress={() => setModalEdit(true)}>
+                <Image style={styles.image} source={require('../assets/edit.png')} />
+            </Pressable>
             <Pressable onPress={() => remove()}>
                 <Image style={styles.image} source={require('../assets/delete.png')} />
             </Pressable>
@@ -50,6 +57,29 @@ const ListTransaction = ({ importe, removeTransaction}) => {
                         <Pressable
                             style={styles.buttonClose}
                             onPress={() => setModalVisible(!modalVisible)}>
+                            <Text style={styles.textStyle}>Cerrar</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            </Modal>
+            {/* Modal de editar */}
+            <Modal
+                style={styles.centeredView}
+                animationType="slide"
+                transparent={true}
+                visible={modalEdit}
+                onRequestClose={() => { setModalVisible(!modalVisible) }} >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text>Editar transacción: </Text>
+                        <TextInput style={styles.importInput} placeholder={"Importe"}
+                            keyboardType='numeric' ></TextInput>
+                        <TextInput style={styles.importInput} placeholder={"Descripción"}></TextInput>
+                        <Pressable style={styles.buttonClose}>
+                            <Text>Modificar</Text>
+                        </Pressable>
+                        <Pressable style={styles.buttonClose}
+                            onPress={() => setModalEdit(!modalEdit)}>
                             <Text style={styles.textStyle}>Cerrar</Text>
                         </Pressable>
                     </View>
@@ -134,6 +164,12 @@ const styles = StyleSheet.create({
         padding: 10,
         elevation: 2,
         marginTop: 15
+    },
+    importInput: {
+        backgroundColor: '#00cbcc',
+        width: 150,
+        borderRadius: 5,
+        marginVertical: 20
     },
 })
 

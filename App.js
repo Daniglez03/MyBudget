@@ -48,7 +48,7 @@ export default function App() {
             : transaction.map((importe, idx) => (
               <ListTransaction
                 key={idx + importe}
-                importe={importe} 
+                importe={importe}
                 removeTransaction={removeTransaction}/>
             ))
         }

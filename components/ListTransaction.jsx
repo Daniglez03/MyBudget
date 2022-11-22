@@ -1,47 +1,74 @@
 import { useState } from 'react';
-import { Image, StyleSheet, Text, View, Modal, Pressable, Alert, TextInput } from 'react-native'
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { Image, StyleSheet, Text, View, Modal, Button, Pressable, Alert, TextInput } from 'react-native'
 
 const ListTransaction = ({ importe, removeTransaction }) => {
     const [newImport, setNewImport] = useState(importe);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalEdit, setModalEdit] = useState(false);
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    let dateUpdated = ""
 
     const remove = () => {
         Alert.alert(
             "Importante !",
             "Estas seguro de que quieres borrar esta transacción ?",
-            [
-                {
-                    text: "Cancel",
-                    style: "cancel",
-                },
-                { text: "OK", onPress: () => removeTransaction(importe.importe) }
-            ]
+            [{ text: "Cancel", style: "cancel" }, { text: "OK", onPress: () => removeTransaction(importe.id) }]
         );
     }
 
-    // const editTransaction = () => {
-    //     setEditImport({...newImport, importe: editImport.importe, description: editImport.description})
-    // }
+    // Date
+    const showDatePicker = () => {
+        setDatePickerVisibility(true);
+    };
+
+    const hideDatePicker = () => {
+        setDatePickerVisibility(false);
+    };
+
+    const handleConfirm = (date) => {
+        dateUpdated = date.toString().substring(0, 10)
+        console.log(dateUpdated);
+        hideDatePicker();
+    };
+    //
+
+    const changeDescriptionHandler = (value) => {
+        //setNewImport(value.description)
+    }
+
+    const changeImportHandler = (value) => {
+        //setNewImport(value.importe)
+    }
+
+    const update = () => {
+        //importe.importe = editImport
+    }
 
     return (
         <View style={styles.listItem}>
             {
                 newImport.importe > 0
-                    ? <Text style={styles.positive}>{newImport.importe} €</Text>
+                    ? <Text style={styles.positive}>{
+                        newImport.importe.length >= 5
+                            ? newImport.importe.substr(0, 4) + "..."
+                            : newImport.importe
+                    } €</Text>
                     : <Text style={styles.negative}>{newImport.importe} €</Text>
             }
-            <Text>Day:{newImport.fecha.substr(7, 3)} Hour:{newImport.fecha.substr(11, 8)}</Text>
-            <Pressable onPress={() => setModalVisible(true)}>
-                <Image style={styles.image} source={require('../assets/info.png')} />
-            </Pressable>
-            <Pressable onPress={() => setModalEdit(true)}>
-                <Image style={styles.image} source={require('../assets/edit.png')} />
-            </Pressable>
-            <Pressable onPress={() => remove()}>
-                <Image style={styles.image} source={require('../assets/delete.png')} />
-            </Pressable>
-            {/* Modal de informacion */}
+            <Text style={styles.dayText}> Day: {newImport.fecha}</Text>
+            <View style={styles.PressableImages}>
+                <Pressable onPress={() => setModalVisible(true)}>
+                    <Image style={styles.image} source={require('../assets/info.png')} />
+                </Pressable>
+                <Pressable onPress={() => setModalEdit(true)}>
+                    <Image style={styles.image} source={require('../assets/edit.png')} />
+                </Pressable>
+                <Pressable onPress={() => remove()}>
+                    <Image style={styles.image} source={require('../assets/delete.png')} />
+                </Pressable>
+            </View>
+            {/* Modal de informacion de la transacción*/}
             <Modal
                 style={styles.centeredView}
                 animationType="slide"
@@ -62,7 +89,7 @@ const ListTransaction = ({ importe, removeTransaction }) => {
                     </View>
                 </View>
             </Modal>
-            {/* Modal de editar */}
+            {/* Modal de editar la transacción */}
             <Modal
                 style={styles.centeredView}
                 animationType="slide"
@@ -72,12 +99,24 @@ const ListTransaction = ({ importe, removeTransaction }) => {
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <Text>Editar transacción: </Text>
-                        <TextInput style={styles.importInput} placeholder={"Importe"}
-                            keyboardType='numeric' ></TextInput>
-                        <TextInput style={styles.importInput} placeholder={"Descripción"}></TextInput>
-                        <Pressable style={styles.buttonClose}>
+                        <TextInput style={styles.importInput} placeholder={"Importe"} onChangeText={changeImportHandler()} value={importe.importe}
+                            keyboardType='numeric'></TextInput>
+                        <TextInput style={styles.importInput} placeholder={"Descripción"} onChangeText={changeDescriptionHandler()} value={importe.importe}
+                        ></TextInput>
+
+                        <Button title="Fecha" onPress={showDatePicker} />
+
+                        <DateTimePickerModal
+                            isVisible={isDatePickerVisible}
+                            mode="date"
+                            onConfirm={handleConfirm}
+                            onCancel={hideDatePicker}
+                        />
+
+                        <Pressable onPress={() => update()} style={styles.buttonClose}>
                             <Text>Modificar</Text>
                         </Pressable>
+
                         <Pressable style={styles.buttonClose}
                             onPress={() => setModalEdit(!modalEdit)}>
                             <Text style={styles.textStyle}>Cerrar</Text>
@@ -100,14 +139,18 @@ const styles = StyleSheet.create({
         paddingRight: 20,
         backgroundColor: 'white',
         height: 50,
-        width: 340,
-        justifyContent: 'flex-end',
+        width: 350,
+        alignContent: 'flex-end'
+    },
+    PressableImages: {
+        flexDirection: 'row',
+        alignContent: 'flex-end'
     },
     centeredView: {
         alignItems: "center",
         flex: 1,
         justifyContent: "center",
-        marginTop: 22
+        backgroundColor: 'rgba(0, 0, 0, 0.5)'
     },
     modalView: {
         margin: 20,
@@ -171,6 +214,9 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginVertical: 20
     },
+    dayText: {
+        fontSize: 11
+    }
 })
 
 export default ListTransaction

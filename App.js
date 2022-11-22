@@ -1,6 +1,6 @@
 import Input from './components/Input';
 import ListTransaction from './components/ListTransaction';
-import { StyleSheet, View, Image, Text, ScrollView, Pressable } from 'react-native';
+import { StyleSheet, View, Image, Text, ScrollView, Pressable, FlatList } from 'react-native';
 import { useState } from 'react';
 
 export default function App() {
@@ -24,11 +24,12 @@ export default function App() {
   let totalPrice = 0;
 
   for (let i = 0; i < transaction.length; i++) {
-    totalPrice += parseInt(transaction[i].importe);
+    totalPrice += parseFloat(transaction[i].importe);
   }
 
-  const removeTransaction = (imports) => {
-    setTransaction(() => transaction.filter((i) => i.description != imports));
+  const removeTransaction = (importsId) => {
+    console.log(importsId);
+    setTransaction(() => transaction.filter((imp) => imp.id != importsId));
   }
 
   return (
@@ -41,28 +42,25 @@ export default function App() {
         <Text style={styles.textStylePrice}>{totalPrice} €</Text>
       </View>
       <Input onImportAdd={addProductHandler} />
-      <ScrollView>
-        {
+      <FlatList data={transaction} renderItem={(transactionData) => {
+        return (
           names.length === 0
             ? <Text style={styles.textEmpty}>Sin Transacciones</Text>
-            : transaction.map((importe, idx) => (
-              <ListTransaction
-                key={idx + importe}
-                importe={importe}
+            :<ListTransaction
+                importe={transactionData.item}
                 removeTransaction={removeTransaction}/>
-            ))
-        }
-      </ScrollView>
+        )
+      }}/>
       <View style={styles.View}>
-      {
-        names.length === 0
-          ? <Pressable style={styles.buttonDisabled}>
-            <Text style={styles.text}>Clear</Text>
-          </Pressable>
-          : <Pressable style={styles.button} onPress={removeAllTransactionsHandler}>
-            <Text style={styles.text}>Clear</Text>
-          </Pressable>
-      }
+        {
+          names.length === 0
+            ? <Pressable style={styles.buttonDisabled}>
+              <Text style={styles.text}>Clear</Text>
+            </Pressable>
+            : <Pressable style={styles.button} onPress={removeAllTransactionsHandler}>
+              <Text style={styles.text}>Clear</Text>
+            </Pressable>
+        }
       </View>
     </View>
   );

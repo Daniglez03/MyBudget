@@ -4,7 +4,7 @@ import { Modal, StyleSheet, TextInput, View, Text, Pressable, Alert } from 'reac
 
 const Input = ({ onImportAdd }) => {
     let transaccion = {
-        id: uuidv4(),
+        id: "",
         fecha: new Date().toLocaleString(),
         importe: 0,
         description: "",
@@ -20,25 +20,20 @@ const Input = ({ onImportAdd }) => {
     const changeDescriptionHandler = (value) => {
         setImporte({ ...importe, description: value })
     }
+
     const addProductHandler = () => {
+        setImporte(importe.fecha = importe.fecha.substr(0, 10))
+        setImporte(importe.id = uuidv4())
         onImportAdd(importe);
+        console.log(importe);
         setImporte({ ...importe, description: "", importe: 0 })
     }
+
     const alertFields = () => Alert.alert(
         "Importante !",
         "Rellena todos los campos para añadir una transacción.",
-        [
-            {
-                text: "Cancel",
-                style: "cancel"
-            },
-            { text: "OK" }
-        ]
+        [{ text: "OK" }]
     );
-
-    let precioTotal = 0;
-    let tusmu = parseInt(importe.importe)
-    precioTotal += tusmu
 
     return (
         <View style={styles.Input}>
@@ -98,7 +93,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 22
+        backgroundColor: 'rgba(0, 0, 0, 0.5)'
     },
     modalView: {
         margin: 20,
